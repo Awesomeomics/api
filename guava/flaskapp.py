@@ -6,6 +6,9 @@ from __future__ import absolute_import
 import sys
 sys.path.append('guava/')
 
+import redis
+import settings
+
 from pymongo import MongoClient
 from flask import Flask, jsonify
 
@@ -35,7 +38,7 @@ def JSONApp(import_name, **kwargs):
 	return app
 
 
-app = JSONAPP(Flask(__name__))
+app = JSONApp(__name__)
 app.config.from_pyfile('settings.py')
 
 app.json_encoder = MongoJSONEncoder
@@ -49,6 +52,12 @@ app.url_map.converters['regex'] = RegexConverter
 
 client = MongoClient(app.config['MONGO_HOST'], app.config['MONGO_PORT'])
 app.db = client[app.config['MONGO_DB']]
+
+app.redis = redis.StrictRedis(host=settings.REDIS_HOST,
+						  port=settings.REDIS_PORT,
+						  db=settings.REDIS_DB,
+						  password=settings.REDIS_PASSWORD)
+
 
 app.register_blueprint(patient)
 app.register_blueprint(auth)

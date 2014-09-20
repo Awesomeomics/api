@@ -16,11 +16,17 @@ CELERY_ACCEPT_CONTENT=['json']
 
 MONGO_PORT = 27017
 MONGO_HOST = 'localhost'
-MONGO_DB = 'guavaTest'
+MONGO_DB = 'guava'
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+REDIS_PASSWORD = '820AEC1BFC5D2C71E06CBF947A3A6191'
 
 
-ANNOVAR_PATH = r"%s/annovar" % '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-1]) 
-UPLOAD_FOLDER =ANNOVAR_PATH
+PATH = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-1])
+ANNOVAR_PATH = UPLOAD_FOLDER =  r"%s/annovar" %  PATH
+RESOURCES_PATH = r"%s/resources" % PATH
 
 
 ANNOTATION_TYPES = {

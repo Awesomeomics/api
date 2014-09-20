@@ -56,7 +56,7 @@ def query(client, pid):
 		abort(403)
 
 	limit = request.args.get('limit', 50)
-	page = request.args.get('page': 1)
+	page = request.args.get('page', 1)
 	skip = limit * (page - 1)
 
 	query = {}

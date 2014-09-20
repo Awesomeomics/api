@@ -13,9 +13,9 @@ import pytz
 
 from bson import ObjectId
 
-client = Blueprint('client', __name__)
+clients = Blueprint('client', __name__)
 
-@client.route('/client', methods=['POST'])
+@clients.route('/client', methods=['POST'])
 def add_client():
 
 	data = request.json
@@ -49,7 +49,7 @@ def add_client():
 	return jsonify(token_resp)
 
 
-@client.route('/client/<regex("[a-f0-9]{24}"):cid>', methods=['GET'])
+@clients.route('/client/<regex("[a-f0-9]{24}"):cid>', methods=['GET'])
 @requires_auth
 def get_client(client, cid):
 
