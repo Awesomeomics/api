@@ -11,6 +11,7 @@ mongo = client[settings.MONGO_DB]
 
 def load_hpo():
 
+
 	if not mongo['HPO'].find_one():
 		hpo_file = open('/'.join([settings.RESOURCES_PATH, 'hpo2gene.json']))
 	  	hpo = json.loads(hpo_file.read())

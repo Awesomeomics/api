@@ -3,7 +3,7 @@
 
 import bcrypt
 
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, jsonify
 from flask import current_app as app
 from authentication import encrypt_password, verify_password
 from authentication import from_refresh_token, generate_token
@@ -12,7 +12,7 @@ from xdomains import crossdomain
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/auth/email', methods=['POST'])
+@auth.route('/auth/email', methods=['POST', 'OPTIONS'])
 @crossdomain()
 def authenticate():
 
@@ -34,7 +34,7 @@ def authenticate():
 	return jsonify(token_resp)
 
 
-@auth.route('/auth/refresh', methods=['GET'])
+@auth.route('/auth/refresh', methods=['GET', 'OPTIONS'])
 @crossdomain()
 def refresh_handler():
 	if not request.args.get('refresh_token'):

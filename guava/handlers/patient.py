@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, jsonify, request, abort, redirect
 from flask import current_app as app
 from werkzeug import secure_filename
 from tasks import annotate_vcf, persist_csv
@@ -17,7 +17,7 @@ from xdomains import crossdomain
 
 patient = Blueprint('patient', __name__)
 
-@patient.route('/patient', methods=['POST'])
+@patient.route('/patient', methods=['POST', 'OPTIONS'])
 @crossdomain()
 @requires_auth
 def annotate(client):
@@ -26,14 +26,18 @@ def annotate(client):
 	if not data:
 		abort(400)
 	data = dict(data)
+	data.pop('file', None)
 
 	if not data.get('sampleId'):
 		abort(400, "missing field 'sampleId'")
 
-	data['_created']=data['_updated'] = datetime.utcnow().replace(microsecond=0).replace(tzinfo=pytz.utc)
-	pid = str(app.db['patients'].insert(data))
 
-	app.db['projects'].insert({'clientId': ObjectId(client), 'patientId': ObjectId(patient)})
+	data['_created']=data['_updated'] = datetime.utcnow().replace(microsecond=0).replace(tzinfo=pytz.utc)
+	
+	if not app.db['patients'].find_one({'sampleId': data['sampleId']}):
+		pid = str(app.db['patients'].insert(data))
+
+	app.db['projects'].insert({'clientId': ObjectId(client), 'patientId': ObjectId(pid)})
 
 	def allowed_file(filename):
 		return '.' in filename and \
@@ -44,14 +48,15 @@ def annotate(client):
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		annotate_vcf.apply_async((filename,), link=persist_csv.s(pid))
-		return jsonify({'status': 'ok'})
+		return redirect('http://localhost:5555')
+		#return jsonify({'status': 'ok'})
 
 	resp = jsonify({'status': 'err'})
 	resp.status_code = 400
 	return resp
 
 
-@patient.route('/patient/<regex("[a-f0-9]{24}"):pid>', methods=['GET', 'POST'])
+@patient.route('/patient/<regex("[a-f0-9]{24}"):pid>', methods=['GET', 'POST', 'OPTIONS'])
 @crossdomain()
 @requires_auth
 def query(client, pid):
@@ -62,11 +67,11 @@ def query(client, pid):
 	if request.method == 'GET':
 		return jsonify(app.db['patients'].find_one({'_id': ObjectId(pid)}))
 
-	limit = request.args.get('limit', 50)
-	page = request.args.get('page', 1)
+	limit = request.args.get('limit', 20)
+	page = int(request.args.get('page', 1))
 	skip = limit * (page - 1)
 
 	query = request.json
 
 	response = app.db['PATIENT_%s' % pid].find(query).skip(skip).limit(limit)
-	return jsonify(response)
+	return jsonify({'results': list(response)})

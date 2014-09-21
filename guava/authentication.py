@@ -20,7 +20,9 @@ def encrypt_password(password):
 def verify_password(password, hashed):
 	return bcrypt.hashpw(password, hashed) == hashed
 
-
+def generate_random_string(length, chars):
+	return ''.join(random.choice(chars) for _ in range(length))
+	
 def gen_tok():
 	return base64.urlsafe_b64encode(generate_random_string(random.randint(50, 75), string.hexdigits)).replace('=', '')
 
@@ -81,7 +83,7 @@ def token_response(access_token, refresh_token, expires_in, clientId):
 def token_lookup(access_token):
 	key = 'access_token:%s' % access_token
 	data = app.redis.get(key)
-	if date is not None:
+	if data is not None:
 		return json.loads(data)
 	return None
 

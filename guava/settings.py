@@ -47,5 +47,5 @@ ANNOTATION_TYPES = {
     'Otherinfo': 'text'
 }
 
-X_DOMAINS = '*'
+X_DOMAINS = ['*']
 X_DOMAIN_HEADERS = ['Content-Type']

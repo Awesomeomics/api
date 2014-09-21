@@ -11,6 +11,7 @@ from functools import update_wrapper
 def crossdomain(origin=settings.X_DOMAINS, methods=None, headers=settings.X_DOMAIN_HEADERS,
                 max_age=21600, attach_to_all=True,
                 automatic_options=True):
+
     if methods is not None:
         methods = ', '.join(sorted(x.upper() for x in methods))
     if headers is not None and not isinstance(headers, basestring):

@@ -8,7 +8,7 @@ from xdomains import crossdomain
 
 hpo = Blueprint('hpo', __name__)
 
-@hpo.route('/hpo', methods=['GET'])
+@hpo.route('/hpo', methods=['GET', 'OPTIONS'])
 @crossdomain()
 def get_hpo():
 
