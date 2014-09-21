@@ -8,9 +8,12 @@ from flask import current_app as app
 from authentication import encrypt_password, verify_password
 from authentication import from_refresh_token, generate_token
 
+from xdomains import crossdomain
+
 auth = Blueprint('auth', __name__)
 
 @auth.route('/auth/email', methods=['POST'])
+@crossdomain()
 def authenticate():
 
 	data = request.json
@@ -32,6 +35,7 @@ def authenticate():
 
 
 @auth.route('/auth/refresh', methods=['GET'])
+@crossdomain()
 def refresh_handler():
 	if not request.args.get('refresh_token'):
 		abort(400, 'missing refresh token')

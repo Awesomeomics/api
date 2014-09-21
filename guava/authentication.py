@@ -90,7 +90,7 @@ def requires_auth(f):
 	@wraps(f)
 	def wrapper(*args, **kwargs):
 		if not request.args.get('access_token'):
-			abort(400, "missing" 'access_token')
+			abort(403, "missing" 'access_token')
 
 		data = token_lookup(request.args['access_token'])
 		if not data:

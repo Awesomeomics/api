@@ -1,7 +1,8 @@
 
 
-# Client Authentication / OAuth [~]
+# Client Authentication / OAuth [-]
 # Client Projects -> Authorize for Projects Only [-]
-# Annotation Querying/Filtering
-# HPO Filtering
+# Annotation Querying/Filtering [-]
+# HPO Filtering [-]
 # Pagination [-]
+# CORS [-]

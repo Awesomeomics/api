@@ -13,9 +13,12 @@ import pytz
 
 from bson import ObjectId
 
+from xdomains import crossdomain
+
 clients = Blueprint('client', __name__)
 
 @clients.route('/client', methods=['POST'])
+@crossdomain()
 def add_client():
 
 	data = request.json
@@ -50,6 +53,7 @@ def add_client():
 
 
 @clients.route('/client/<regex("[a-f0-9]{24}"):cid>', methods=['GET'])
+@crossdomain()
 @requires_auth
 def get_client(client, cid):
 

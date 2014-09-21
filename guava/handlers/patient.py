@@ -13,9 +13,12 @@ from authentication import requires_auth
 
 from bson import ObjectId
 
+from xdomains import crossdomain
+
 patient = Blueprint('patient', __name__)
 
 @patient.route('/patient', methods=['POST'])
+@crossdomain()
 @requires_auth
 def annotate(client):
 
@@ -49,16 +52,21 @@ def annotate(client):
 
 
 @patient.route('/patient/<regex("[a-f0-9]{24}"):pid>', methods=['GET', 'POST'])
+@crossdomain()
 @requires_auth
 def query(client, pid):
 
 	if not app.db['projects'].find_one({'clientId': ObjectId(client), 'patientId': ObjectId(pid)}):
 		abort(403)
 
+	if request.method == 'GET':
+		return jsonify(app.db['patients'].find_one({'_id': ObjectId(pid)}))
+
 	limit = request.args.get('limit', 50)
 	page = request.args.get('page', 1)
 	skip = limit * (page - 1)
 
-	query = {}
+	query = request.json
+
 	response = app.db['PATIENT_%s' % pid].find(query).skip(skip).limit(limit)
 	return jsonify(response)

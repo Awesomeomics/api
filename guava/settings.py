@@ -46,3 +46,6 @@ ANNOTATION_TYPES = {
     'clinvar_20140902': 'text',
     'Otherinfo': 'text'
 }
+
+X_DOMAINS = '*'
+X_DOMAIN_HEADERS = ['Content-Type']

@@ -21,6 +21,8 @@ from werkzeug.exceptions import default_exceptions, HTTPException
 from werkzeug.routing import BaseConverter
 from utils import MongoJSONEncoder
 
+from prepare import load_hpo
+
 def JSONApp(import_name, **kwargs):
 
 	def make_json_error(ex):
@@ -65,4 +67,6 @@ app.register_blueprint(clients)
 app.register_blueprint(hpo)
 
 if __name__ == '__main__':
+
+	load_hpo()
 	app.run()
